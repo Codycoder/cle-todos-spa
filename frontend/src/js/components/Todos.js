@@ -8,5 +8,10 @@ export default function Todos(todos){
                 `
             }).join("")}
         </ol>
-    `
+
+        <section class="add-todo">
+            <button class="add-todo__button">Add a Todo</button>
+            
+        </section>
+    `;
 }

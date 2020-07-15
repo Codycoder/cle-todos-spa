@@ -4,6 +4,8 @@ import Home from "./components/Home";
 import Todos from "./components/Todos";
 import Owners from "./components/Owners";
 import Owner from "./components/Owner";
+import apiActions from './api/apiActions';
+import TodosPostSection from './components/TodosPostSection';
 
 const appDiv = document.querySelector('.app');
 
@@ -36,6 +38,8 @@ function navHome() {
 
 function navTodos() {
     const todosButton = document.querySelector('.nav__todos');
+    // const app = document.querySelector('#app');
+
     todosButton.addEventListener('click', function(){
         fetch("https://localhost:44393/api/todo")
         .then(response => response.json())
@@ -46,6 +50,45 @@ function navTodos() {
         .catch(err => console.log(err))
     })
 }
+
+appDiv.addEventListener("click", function(){
+    const addTodoSection = document.querySelector('.add-todo');
+    if(event.target.classList.contains('add-todo__button')){
+        apiActions.getRequest(`https://localhost:44393/api/owner`,
+            owners => {
+                console.log(owners)
+            addTodoSection.innerHTML= TodosPostSection(owners);
+        })
+    }
+})
+
+appDiv.addEventListener("click", function(){
+    if(event.target.classList.contains('add-todo__submit')){
+        const todoName = event.target.parentElement.querySelector('.add-todo__todoName').value;
+        const todoOwner = event.target.parentElement.querySelector('.add-todo__todoOwners').value;
+
+        console.log(todoName);
+
+
+        var requestBody = {
+            Name: todoName,
+            OwnerId: todoOwner
+        }
+
+        apiActions.postRequest(
+            "https://localhost:44393/api/todo",
+            requestBody,
+            toDos => {
+                console.log("Todos returned from back end");
+                console.log(toDos);
+                appDiv.innerHTML = Todos(toDos);
+            }
+        )
+    }
+})
+
+
+
 
 function navOwners() {
     const ownersButton = document.querySelector('.nav__owners');
